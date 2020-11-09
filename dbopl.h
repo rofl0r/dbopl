@@ -16,8 +16,24 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "adlib.h"
-#include "dosbox.h"
+
+/*
+	define Bits, Bitu, Bit32s, Bit32u, Bit16s, Bit16u, Bit8s, Bit8u here
+*/
+#include <stdint.h>
+#include <stdbool.h>
+typedef uintptr_t	Bitu;
+typedef intptr_t	Bits;
+typedef uint32_t	Bit32u;
+typedef int32_t		Bit32s;
+typedef uint16_t	Bit16u;
+typedef int16_t		Bit16s;
+typedef uint8_t		Bit8u;
+typedef int8_t		Bit8s;
+
+#define GCC_UNLIKELY(x) (x)
+#define GCC_LIKELY(x) (x)
+#define INLINE inline
 
 //Use 8 handlers based on a small logatirmic wavetabe and an exponential table for volume
 #define WAVE_HANDLER	10
@@ -247,12 +263,12 @@ struct Chip {
 	Chip();
 };
 
-struct Handler : public Adlib::Handler {
+struct Handler {
 	DBOPL::Chip chip;
-	virtual Bit32u WriteAddr( Bit32u port, Bit8u val );
-	virtual void WriteReg( Bit32u addr, Bit8u val );
-	virtual void Generate( MixerChannel* chan, Bitu samples );
-	virtual void Init( Bitu rate );
+	Bit32u WriteAddr( Bit32u port, Bit8u val );
+	void WriteReg( Bit32u addr, Bit8u val );
+	void Generate( Bit32s *buffer, Bitu samples );
+	void Init( Bitu rate );
 };
 
 

@@ -38,7 +38,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stddef.h>
-#include "dosbox.h"
 #include "dbopl.h"
 
 
@@ -1497,7 +1496,12 @@ void Handler::WriteReg( Bit32u addr, Bit8u val ) {
 	chip.WriteReg( addr, val );
 }
 
-void Handler::Generate( MixerChannel* chan, Bitu samples ) {
+void Handler::Generate( Bit32s *buffer, Bitu samples ) {
+	if ( !chip.opl3Active )
+		chip.GenerateBlock2( samples, buffer );
+	else
+		chip.GenerateBlock3( samples, buffer );
+#if 0
 	Bit32s buffer[ 512 * 2 ];
 	if ( GCC_UNLIKELY(samples > 512) )
 		samples = 512;
@@ -1508,6 +1512,7 @@ void Handler::Generate( MixerChannel* chan, Bitu samples ) {
 		chip.GenerateBlock3( samples, buffer );
 		chan->AddSamples_s32( samples, buffer );
 	}
+#endif
 }
 
 void Handler::Init( Bitu rate ) {
